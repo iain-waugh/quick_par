@@ -10,7 +10,11 @@ Use it to see the logic that you will get if you write code in a certain way.
 
 ### Setup:
 
-Make sure Vivado is installed and on your executable path.  You should be able to type Vivado from the command line to open the GUI.
+Install Xilinx Vivado (if you haven't done so already).
+
+Make sure Vivado is on your executable path.  You should be able to type `vivado` from the command line to open the GUI.
+
+Install a GNU `make` tool from somewhere and make sure it's on your executable path.  You should be able to type `make` from the command line.
 
 
 
