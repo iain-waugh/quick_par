@@ -26,7 +26,7 @@ This gives you a build directory under `syn/vivado/build_your_project` which you
 
 
 
-For speed, you can just get the synthesised '.dcp' file by typ:
+For speed, you can just get the synthesised '.dcp' file by typing:
 
 `PROJECT  = <your entity name> make synth`
 
