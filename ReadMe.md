@@ -20,7 +20,7 @@ Create a VHDL file in the `src` directory and give it the same filename as the e
 
 Then, `cd` to `syn/vivado` and type:
 
-PROJECT  = <your entity name> make
+`PROJECT  = <your entity name> make`
 
 This gives you a build directory under `syn/vivado/build_your_project` which you can examine by opening the '.dcp' file.
 
@@ -28,5 +28,5 @@ This gives you a build directory under `syn/vivado/build_your_project` which you
 
 For speed, you can just get the synthesised '.dcp' file by typ:
 
-PROJECT  = <your entity name> make synth
+`PROJECT  = <your entity name> make synth`
 
