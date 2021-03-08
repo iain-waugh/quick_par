@@ -78,3 +78,7 @@ ${OUT_DIR}/${ROUTE_NAME}.dcp : ${OUT_DIR}/${SYNTH_NAME}.dcp ${ROUTE_NAME}.tcl
 	vivado -mode batch -source ${ROUTE_NAME}.tcl \
 		-log ${OUT_DIR}/${ROUTE_NAME}.log -journal ${OUT_DIR}/${ROUTE_NAME}.jou \
 		-tclargs ${OUT_DIR} ${SYNTH_NAME} ${ROUTE_NAME} ${PROJECT}
+
+# The route TCL file generates file of device usage per cell
+# Parse them into something simpler
+	python parse_usage.py ${OUT_DIR}

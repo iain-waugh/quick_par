@@ -40,6 +40,7 @@ read_vhdl "../../src/${PROJECT}.vhd"
 #   Options used are:
 #     (none)
 read_xdc ${DEVICE}.xdc
+read_xdc timing.xdc
 
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
