@@ -152,7 +152,7 @@ def reshape_all_results(results, filename="cell_usage.csv"):
     while i < len(cell_list):
         resources = results[cell_list[i]]
         rt2 = [list(x) for x in zip(*resources)]
-        rtdf2 = pd.DataFrame([rt2[1]], columns=list(rt2[0]), index=[cell_list[0]])
+        rtdf2 = pd.DataFrame([rt2[1]], columns=list(rt2[0]), index=[cell_list[i]])
         # Merge the two dataframes.
         # The trick here is to put the longest one first,
         # because it will have more columns in it
