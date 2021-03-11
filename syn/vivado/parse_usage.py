@@ -156,7 +156,7 @@ def reshape_all_results(results, filename="cell_usage.csv"):
         # Merge the two dataframes.
         # The trick here is to put the longest one first,
         # because it will have more columns in it
-        if rtdf2.size > rtdf1.size:
+        if rtdf2.shape[1] > rtdf1.shape[1]:
             rtdf1 = pd.concat([rtdf2, rtdf1]).fillna(0)
         else:
             rtdf1 = pd.concat([rtdf1, rtdf2]).fillna(0)
