@@ -26,9 +26,19 @@ Then, `cd` to `syn/vivado` and type:
 
 `PROJECT  = <your entity name> make`
 
+Or `make PROJECT=<your entity name>` ; both options work.
+
 This gives you a build directory under `syn/vivado/build_your_project` which you can examine by opening the '.dcp' file.
 
+If you want to target a different part, specify it on the command line like this:
 
+`make PROJECT=<your entity name> PART=<part number>`
+
+Use the same part number that you see in Vivado's "New Project" wizard.
+
+Example:
+
+`make PROJECT=counters PART=xcku040-fbva676-2-e`
 
 For speed, you can just get the synthesised '.dcp' file by typing:
 

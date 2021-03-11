@@ -5,10 +5,10 @@
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ## Read TCL script command-line arguments
-set OUT_DIR      [ lindex $argv 0 ]
-set SYNTH_DCP    [ lindex $argv 1 ]
-set DEVICE       [ lindex $argv 2 ]
-set PROJECT      [ lindex $argv 3 ]
+set OUT_DIR    [ lindex $argv 0 ]
+set SYNTH_DCP  [ lindex $argv 1 ]
+set PART       [ lindex $argv 2 ]
+set PROJECT    [ lindex $argv 3 ]
 
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -16,7 +16,7 @@ set PROJECT      [ lindex $argv 3 ]
 #   UG834 v2018.3, page 331
 #   Options used are:
 #     -in_memory : Create an in-memory project
-create_project -in_memory -part ${DEVICE}
+create_project -in_memory -part ${PART}
 
 set_property target_language VHDL [ current_project ]
 
@@ -39,7 +39,7 @@ read_vhdl "../../src/${PROJECT}.vhd"
 #   UG834 v2018.3, page 1148
 #   Options used are:
 #     (none)
-read_xdc ${DEVICE}.xdc
+read_xdc ${PART}.xdc
 read_xdc timing.xdc
 
 
@@ -50,7 +50,7 @@ read_xdc timing.xdc
 #   Options used are:
 #     -top  : Specify the top module name
 #     -part : Target part
-synth_design -top ${PROJECT} -part ${DEVICE} -mode out_of_context
+synth_design -top ${PROJECT} -part ${PART} -mode out_of_context
 
 report_utilization -file ${OUT_DIR}/${PROJECT}_synth_util.txt
 

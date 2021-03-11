@@ -8,9 +8,9 @@
 
 # =========================================================================
 # Key project names and directories
-PROJECT ?= prbs23_small
-DEVICE  ?= xc7z015-clg485-1
-OUT_DIR  = ${PROJECT}/${DEVICE}
+PROJECT  ?= prbs23_small
+PART     ?= xc7z015-clg485-1
+OUT_DIR   = ${PROJECT}/${PART}
 
 
 # =========================================================================
@@ -39,7 +39,7 @@ ROUTE_NAME = zynq_route
 
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-# 00 - Make everything
+# 00a - Make everything
 # Typing 'make' by itself runs the first target entry in the makefile
 all: synth route
 
@@ -48,10 +48,16 @@ clean:
 
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# 00b - Preprocess the environment to be sure files are in place
+${PART}.xdc:
+	touch ${PART}.xdc
+
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 # 01 - Synthesis
 .PHONY: synth
 synth: ${OUT_DIR}/${SYNTH_NAME}.dcp
-${OUT_DIR}/${SYNTH_NAME}.dcp : ../../src/${PROJECT}.vhd ${SYNTH_NAME}.tcl ${DEVICE}.xdc
+${OUT_DIR}/${SYNTH_NAME}.dcp : ../../src/${PROJECT}.vhd ${SYNTH_NAME}.tcl ${PART}.xdc
 
 # Invoke the synthesis script
 	@echo
@@ -61,7 +67,7 @@ ${OUT_DIR}/${SYNTH_NAME}.dcp : ../../src/${PROJECT}.vhd ${SYNTH_NAME}.tcl ${DEVI
 	mkdir -p ${OUT_DIR}
 	vivado -mode batch -source ${SYNTH_NAME}.tcl \
 		-log ${OUT_DIR}/${SYNTH_NAME}.log -journal ${OUT_DIR}/${SYNTH_NAME}.jou \
-		-tclargs ${OUT_DIR} ${SYNTH_NAME} ${DEVICE} ${PROJECT}
+		-tclargs ${OUT_DIR} ${SYNTH_NAME} ${PART} ${PROJECT}
 
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -79,6 +85,6 @@ ${OUT_DIR}/${ROUTE_NAME}.dcp : ${OUT_DIR}/${SYNTH_NAME}.dcp ${ROUTE_NAME}.tcl
 		-log ${OUT_DIR}/${ROUTE_NAME}.log -journal ${OUT_DIR}/${ROUTE_NAME}.jou \
 		-tclargs ${OUT_DIR} ${SYNTH_NAME} ${ROUTE_NAME} ${PROJECT}
 
-# The route TCL file generates file of device usage per cell
+# The route TCL file generates file of PART usage per cell
 # Parse them into something simpler
 	python parse_usage.py ${OUT_DIR}
