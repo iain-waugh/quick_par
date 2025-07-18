@@ -47,7 +47,7 @@ begin  -- count_up_lte_num_rtl
 
   ----------------------------------------------------------------------
   -- Count up: check "<="
-  u_count_up_lte_num : process (clk)
+  u_count_up_lte_num : process (clk, rst)
   begin
     if (rst = '1') then
       count <= (others => '0');
@@ -97,7 +97,7 @@ begin  -- count_up_lte_num_rtl
 
   ----------------------------------------------------------------------
   -- Count up: check ">"
-  u_count_up_gt_num : process (clk)
+  u_count_up_gt_num : process (clk, rst)
   begin
     if (rst = '1') then
       count <= (others => '0');
@@ -147,7 +147,7 @@ begin  -- count_up_lte_num_rtl
 
   ----------------------------------------------------------------------
   -- Count down: check " = 0"
-  u_count_dn_eq_zero : process (clk)
+  u_count_dn_eq_zero : process (clk, i_number, rst)
   begin
     if (rst = '1') then
       count <= i_number;
@@ -197,14 +197,14 @@ begin  -- count_up_lte_num_rtl
 
   ----------------------------------------------------------------------
   -- Count up: check " > 0"
-  u_count_dn_gt_zero : process (clk)
+  u_count_dn_gt_zero : process (clk, i_number, rst)
   begin
     if (rst = '1') then
       count <= i_number;
       done  <= '0';
     elsif (rising_edge(clk)) then
       if (count > 0) then
-        count <= count + 1;
+        count <= count - 1;
         done  <= '0';
       else
         count <= i_number;
