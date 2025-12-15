@@ -5,11 +5,15 @@
 #
 # target:  dependency1 dependency2 ...
 #    <tab> command
+#
+# You can pass generics with this syntax:
+# GENERIC="G_NAME1:Value1 G_NAME2:Value2" make
 
 # =========================================================================
 # Key project names and directories
-PROJECT  ?= prbs23_small
+PROJECT  ?= counters
 PART     ?= xc7z015-clg485-1
+GENERIC  ?= "G_WIDTH:5"
 OUT_DIR   = ${PROJECT}/${PART}
 
 
@@ -67,7 +71,7 @@ ${OUT_DIR}/${SYNTH_NAME}.dcp : ../../src/${PROJECT}.vhd ${SYNTH_NAME}.tcl ${PART
 	mkdir -p ${OUT_DIR}
 	vivado -mode batch -source ${SYNTH_NAME}.tcl \
 		-log ${OUT_DIR}/${SYNTH_NAME}.log -journal ${OUT_DIR}/${SYNTH_NAME}.jou \
-		-tclargs ${OUT_DIR} ${SYNTH_NAME} ${PART} ${PROJECT}
+		-tclargs ${OUT_DIR} ${SYNTH_NAME} ${PART} ${PROJECT} ${GENERIC}
 
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

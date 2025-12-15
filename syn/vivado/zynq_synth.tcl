@@ -9,6 +9,14 @@ set OUT_DIR    [ lindex $argv 0 ]
 set SYNTH_DCP  [ lindex $argv 1 ]
 set PART       [ lindex $argv 2 ]
 set PROJECT    [ lindex $argv 3 ]
+set GENERIC    [ lindex $argv 4 ]
+
+set GENERIC_LIST {}
+foreach str ${GENERIC} {
+  set str [regsub {:} $str {=}]
+  set GENERIC_LIST "${GENERIC_LIST} -generic ${str}"
+}
+puts "Top-level generics are: ${GENERIC_LIST}"
 
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -50,7 +58,7 @@ read_xdc timing.xdc
 #   Options used are:
 #     -top  : Specify the top module name
 #     -part : Target part
-synth_design -top ${PROJECT} -part ${PART} -mode out_of_context
+synth_design -top ${PROJECT} -part ${PART} -mode out_of_context {*}${GENERIC_LIST}
 
 report_utilization -file ${OUT_DIR}/${PROJECT}_synth_util.txt
 
