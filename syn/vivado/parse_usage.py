@@ -37,9 +37,20 @@ def read_table(lines, section, index):
         | F8 Muxes                |    0 |     0 |     11550 |  0.00 |
         +-------------------------+------+-------+-----------+-------+
 
-    If the first character of the "index" input is not a '+', then this is 
+    or this (2024.2+):
+        +----------+------+---------------------+
+        | Ref Name | Used | Functional Category |
+        +----------+------+---------------------+
+        | LUT6     |   13 |                 LUT |
+        | FDRE     |   13 |        Flop & Latch |
+        | LUT1     |   11 |                 LUT |
+        | LUT4     |    3 |                 LUT |
+        | CARRY4   |    3 |          CarryLogic |
+        +----------+------+---------------------+
+
+    If the first character of the "index" input is not a '+', then this is
     not a valid table and we return an empty result.
-    
+
     Present the results as a list.
     """
     table_content = []
@@ -69,6 +80,10 @@ def read_table(lines, section, index):
     if "Site Type" in headers:
         headers_valid = True
         type_index = headers.index("Site Type")
+        used_index = headers.index("Used")
+    if "Ref Name" in headers:
+        headers_valid = True
+        type_index = headers.index("Ref Name")
         used_index = headers.index("Used")
 
     # Skip one row
@@ -107,7 +122,7 @@ def parse_cell_tables(lines):
         # Parse out specific section titles by looking for lines that
         # look like this "3. Memory"
         # Throw away the number and keep the name: "Memory"
-        matches = re.match("^([0-9\.]+)\s+(.*)", line)
+        matches = re.match(r"^([0-9\.]+)\s+(.*)", line)
         if matches:
             # TODO: Add an optional filter for the section
             section_index = matches[1]
@@ -145,30 +160,38 @@ def reshape_all_results(results, filename="cell_usage.csv"):
     # Get the resource names from the first list of table results
     # and turn them into a Pandas DataFrame
     resources = results[cell_list[0]]
+
     rt1 = [list(x) for x in zip(*resources)]
     rtdf1 = pd.DataFrame([rt1[1]], columns=list(rt1[0]), index=[cell_list[0]])
+
+    # Remove duplicated columns
+    rtdf1 = rtdf1.loc[:, ~rtdf1.columns.duplicated()].copy()
 
     i = 1
     while i < len(cell_list):
         resources = results[cell_list[i]]
         rt2 = [list(x) for x in zip(*resources)]
         rtdf2 = pd.DataFrame([rt2[1]], columns=list(rt2[0]), index=[cell_list[i]])
+
+        # Remove duplicated columns
+        rtdf2 = rtdf2.loc[:, ~rtdf2.columns.duplicated()].copy()
+
         # Merge the two dataframes.
         # The trick here is to put the longest one first,
         # because it will have more columns in it
         if rtdf2.shape[1] > rtdf1.shape[1]:
-            rtdf1 = pd.concat([rtdf2, rtdf1]).fillna(0)
+            rtdf1 = pd.concat([rtdf2, rtdf1], axis=0).fillna(0)
         else:
-            rtdf1 = pd.concat([rtdf1, rtdf2]).fillna(0)
-        i = i + 1
+            rtdf1 = pd.concat([rtdf1, rtdf2], axis=0).fillna(0)
 
+        i = i + 1
     return rtdf1
 
 
 def main(scan_dir):
     """
     Scan the files in a directory for cell usage reports,
-    the parse every vaue in them and create a file of the results
+    then parse every value in them and create a file of the results
     """
     results = {}
     # Convert a relative path to an absolute one
@@ -189,8 +212,8 @@ def main(scan_dir):
         cell_name = file_path.name[5:-9]
         results[cell_name] = parse_cell_tables(lines)
 
-    # Gather all the table results together into a Pandas DataFrame
-    all_cells_df = reshape_all_results(results)
+    # Gather all the table results together into a sorted Pandas DataFrame
+    all_cells_df = reshape_all_results(results).sort_index(axis=1)
 
     # Write the results out to a CSV file
     output_filename = result_path / "all_cells_util.csv"
